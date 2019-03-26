@@ -19,6 +19,7 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
+         checkboxInput("show_histogram", "Show plot?", FALSE),
          sliderInput("bins",
                      "Number of bins:",
                      min = 1,
@@ -44,9 +45,11 @@ server <- function(input, output) {
      #Define plotting object
      p <- ggplot(data = geyser_data, aes(x=waiting))
      
-    # generate bins based on input$bins from ui.R
-     p <- p + geom_histogram(bins = input$bins)
-
+     #Make the plotting conditional
+     if (input$show_histogram) {
+       # generate bins based on input$bins from ui.R
+       p <- p + geom_histogram(bins = input$bins)
+     }
       
       # draw the histogram with the specified number of bins
       return(p)

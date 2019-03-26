@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(ggplot2)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -36,12 +37,19 @@ ui <- fluidPage(
 server <- function(input, output) {
    
    output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+
+     # Convert data from faithful into dataframe with waiting times     
+     geyser_data <- data.frame(waiting=faithful$waiting)
+     
+     #Define plotting object
+     p <- ggplot(data = geyser_data, aes(x=waiting))
+     
+    # generate bins based on input$bins from ui.R
+     p <- p + geom_histogram(bins = input$bins)
+
       
       # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+      return(p)
    })
 }
 

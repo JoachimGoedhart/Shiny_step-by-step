@@ -29,8 +29,7 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         checkboxInput("show_histogram", "Show plot?", FALSE),
-         conditionalPanel(condition="input.show_histogram == true",
+         checkboxInput("show_table", "Show table?", FALSE),
                sliderInput("bins",
                            "Number of bins:",
                            min = 1,
@@ -41,12 +40,16 @@ ui <- fluidPage(
                            min = 0,
                            max = 1,
                            value = 0.8)
-           )
       ),
       
       # Show a plot of the generated distribution and a tabel with statistics
       mainPanel(
-         plotOutput("distPlot"), tableOutput("data_summary")
+         plotOutput("distPlot"),
+         
+         #Make the table optional
+         conditionalPanel(condition="input.show_table == true",
+                          tableOutput("data_summary")
+         )
       )
    )
 )
@@ -58,13 +61,10 @@ server <- function(input, output) {
      
      #Define plotting object
      p <- ggplot(data = df_tidy, aes(x=Value, fill=Condition))
-     
-     #Make the plotting conditional
-     if (input$show_histogram) {
+
        # generate bins based on input$bins from ui.R
        # use alpha defined by input$alpha from ui.R
        p <- p + geom_histogram(bins = input$bins, alpha=input$alpha)
-     }
       
       # draw the histogram with the specified number of bins
       return(p)

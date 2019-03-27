@@ -10,6 +10,13 @@
 library(shiny)
 library(ggplot2)
 
+#Read a dataframe from a CSV file that is present in the same directory
+df <- read.csv("Area_in_um-GEFs.csv", na.strings = "")
+
+#Convert to tidy format and remove missing values
+df_tidy <- df  %>% gather(Condition, Value) %>% filter(!is.na(Value))
+
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
@@ -45,12 +52,9 @@ ui <- fluidPage(
 server <- function(input, output) {
    
    output$distPlot <- renderPlot({
-
-     # Convert data from faithful into dataframe with waiting times     
-     geyser_data <- data.frame(waiting=faithful$waiting)
      
      #Define plotting object
-     p <- ggplot(data = geyser_data, aes(x=waiting))
+     p <- ggplot(data = df_tidy, aes(x=Value, fill=Condition))
      
      #Make the plotting conditional
      if (input$show_histogram) {

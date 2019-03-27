@@ -9,6 +9,9 @@
 
 library(shiny)
 library(ggplot2)
+library(tidyr)
+library(magrittr)
+library(dplyr)
 
 #Read a dataframe from a CSV file that is present in the same directory
 df <- read.csv("Area_in_um-GEFs.csv", na.strings = "")

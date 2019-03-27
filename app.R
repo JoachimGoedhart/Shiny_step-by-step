@@ -14,22 +14,24 @@ library(ggplot2)
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Old Faithful Geyser Data"),
+   titlePanel("Shiny Demo"),
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
          checkboxInput("show_histogram", "Show plot?", FALSE),
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30),
-         sliderInput("alpha",
-                     "Tranparency:",
-                     min = 0,
-                     max = 1,
-                     value = 0.8)
+         conditionalPanel(condition="input.show_histogram == true",
+               sliderInput("bins",
+                           "Number of bins:",
+                           min = 1,
+                           max = 50,
+                           value = 30),
+               sliderInput("alpha",
+                           "Tranparency:",
+                           min = 0,
+                           max = 1,
+                           value = 0.8)
+           )
       ),
       
       # Show a plot of the generated distribution

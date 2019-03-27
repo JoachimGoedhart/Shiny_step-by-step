@@ -29,7 +29,7 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         checkboxInput("show_table", "Show table?", FALSE),
+               checkboxInput("show_table", "Show table?", FALSE),
                sliderInput("bins",
                            "Number of bins:",
                            min = 1,
@@ -39,7 +39,15 @@ ui <- fluidPage(
                            "Tranparency:",
                            min = 0,
                            max = 1,
-                           value = 0.8)
+                           value = 0.8),
+               checkboxInput(inputId = "label_axes",
+                            label = "Change label",
+                            value = FALSE),
+               conditionalPanel(
+                  condition = "input.label_axes == true",
+                  textInput("lab_x", "X-axis:", value = "")
+        )
+         
       ),
       
       # Show a plot of the generated distribution and a tabel with statistics
@@ -65,6 +73,11 @@ server <- function(input, output) {
        # generate bins based on input$bins from ui.R
        # use alpha defined by input$alpha from ui.R
        p <- p + geom_histogram(bins = input$bins, alpha=input$alpha)
+      
+     # if label is specified display add it to the plot
+     if (input$label_axes) {
+       p <- p + labs(x = input$lab_x)
+     }
       
       # draw the histogram with the specified number of bins
       return(p)

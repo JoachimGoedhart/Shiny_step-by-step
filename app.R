@@ -44,9 +44,9 @@ ui <- fluidPage(
            )
       ),
       
-      # Show a plot of the generated distribution
+      # Show a plot of the generated distribution and a tabel with statistics
       mainPanel(
-         plotOutput("distPlot")
+         plotOutput("distPlot"), tableOutput("data_summary")
       )
    )
 )
@@ -69,6 +69,27 @@ server <- function(input, output) {
       # draw the histogram with the specified number of bins
       return(p)
    })
+   
+   #Generate a data frame with summary statistics (per Condition)
+   df_summary <- reactive({
+     
+     df_tidy %>%
+       group_by(Condition) %>% 
+       summarise(n = n(),
+                 mean = mean(Value, na.rm = TRUE),
+                 median = median(Value, na.rm = TRUE),
+                 sd = sd(Value, na.rm = TRUE)) %>%
+       mutate(sem = sd / sqrt(n - 1),
+              mean_CI_lo = mean + qt((1-0.95)/2, n - 1) * sem,
+              mean_CI_hi = mean - qt((1-0.95)/2, n - 1) * sem)
+     
+   })
+   
+   #Take the df_summary dataframe and render it as a Table for output in shiny
+   output$data_summary <- renderTable(
+       df_summary()
+   )
+   
 }
 
 # Run the application 

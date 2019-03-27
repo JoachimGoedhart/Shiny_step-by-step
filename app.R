@@ -24,7 +24,12 @@ ui <- fluidPage(
                      "Number of bins:",
                      min = 1,
                      max = 50,
-                     value = 30)
+                     value = 30),
+         sliderInput("alpha",
+                     "Tranparency:",
+                     min = 0,
+                     max = 1,
+                     value = 0.8)
       ),
       
       # Show a plot of the generated distribution
@@ -48,7 +53,8 @@ server <- function(input, output) {
      #Make the plotting conditional
      if (input$show_histogram) {
        # generate bins based on input$bins from ui.R
-       p <- p + geom_histogram(bins = input$bins)
+       # use alpha defined by input$alpha from ui.R
+       p <- p + geom_histogram(bins = input$bins, alpha=input$alpha)
      }
       
       # draw the histogram with the specified number of bins
